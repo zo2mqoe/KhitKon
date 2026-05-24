@@ -279,31 +279,32 @@
             }
         }
 
-        // ================= ระบบดึงสถานะดิสคอร์ดอัตโนมัติ (Lanyard API) =================
-        function applyDiscordStatus(card, status, avatarId) {
+        // ================= แก้ไขระบบ Lanyard API ดึงสถานะและรูปภาพออโต้แบบสมบูรณ์ =================
+        function applyDiscordStatus(card, status, avatarId, discordId) {
+            const wrapper = card.querySelector('.avatar-wrapper');
+            const avatarImg = card.querySelector('.user-avatar');
+            if (!wrapper) return;
+
+            // 1. สลับรูปโปรไฟล์ออโต้ตามดิสคอร์ด
+            if (avatarId && avatarImg) {
+                avatarImg.src = `https://cdn.discordapp.com/avatars/${discordId}/${avatarId}.png?size=128`;
+            }
+
+            // 2. ตรวจสอบ/สร้างจุดแสดงวงกลมสถานะ
             let statusDot = card.querySelector('.user-status');
             if (!statusDot) {
                 statusDot = document.createElement('span');
                 statusDot.className = "user-status absolute bottom-0 right-0 w-3.5 h-3.5 border-2 border-[#fdf8fa] rounded-full shadow-sm flex items-center justify-center overflow-hidden";
-                card.querySelector('.avatar-wrapper').classList.add('relative');
-                card.querySelector('.avatar-wrapper').appendChild(statusDot);
+                wrapper.appendChild(statusDot);
             }
 
-            const avatarImg = card.querySelector('.user-avatar');
-            const wrapper = card.querySelector('.avatar-wrapper');
-
-            // เปลี่ยนรูปโปรไฟล์ตาม Discord จริง
-            if (avatarId && avatarImg) {
-                const userId = card.getAttribute('data-discord-id');
-                avatarImg.src = `https://cdn.discordapp.com/avatars/${userId}/${avatarId}.png?size=128`;
-            }
-
+            // ล้างค่าสถานะเก่าออกทั้งหมดก่อนกำหนดค่าใหม่
             statusDot.className = "user-status absolute bottom-0 right-0 w-3.5 h-3.5 border-2 border-[#fdf8fa] rounded-full shadow-sm flex items-center justify-center overflow-hidden";
             statusDot.style.clipPath = "";
             statusDot.innerHTML = "";
-            if (wrapper) wrapper.classList.remove('opacity-60');
+            wrapper.classList.remove('opacity-60');
 
-            // แสดงสีวงกลมสถานะตาม Discord
+            // 3. จัดการแสดงผลสีสถานะ
             if (status === 'online') {
                 statusDot.classList.add('bg-[#23a55a]');
             } else if (status === 'idle') {
@@ -314,17 +315,20 @@
                 statusDot.classList.add('bg-[#f23f43]');
                 statusDot.innerHTML = `<span class="w-1.5 h-0.5 bg-white rounded-full"></span>`;
             } else {
+                // Offline หรือ หาไม่เจอ
                 statusDot.classList.add('bg-[#80848e]');
                 statusDot.innerHTML = `<span class="w-1.5 h-1.5 bg-[#fdf8fa] rounded-full"></span>`;
-                if (wrapper) wrapper.classList.add('opacity-60');
+                wrapper.classList.add('opacity-60');
             }
         }
 
         async function loadAllMembersStatus() {
             const cards = document.querySelectorAll('.member-card');
-            cards.forEach(async (card) => {
+            
+            // ใช้โครงสร้างแบบ loop เสถียรสูง มั่นใจได้ว่าข้อมูลถูกเรียกทำงานครบทุกคนแน่นอน
+            for (const card of cards) {
                 const discordId = card.getAttribute('data-discord-id');
-                if (!discordId || discordId.includes('ใส่_ID')) return;
+                if (!discordId || discordId.includes('ใส่_ID')) continue;
 
                 try {
                     const res = await fetch(`https://api.lanyard.rest/v1/users/${discordId}`);
@@ -333,16 +337,17 @@
                     if (json.success && json.data) {
                         const status = json.data.discord_status; 
                         const avatarId = json.data.discord_user.avatar;
-                        applyDiscordStatus(card, status, avatarId);
+                        applyDiscordStatus(card, status, avatarId, discordId);
                     }
                 } catch (err) {
-                    console.error("ไม่สามารถดึงสถานะไอดี " + discordId, err);
+                    console.error("Lanyard Error สำหรับไอดี: " + discordId, err);
                 }
-            });
+            }
         }
 
+        // เรียกทำงานทันทีเมื่อหน้าเว็บโหลดเสร็จ และอัปเดตทุกๆ 15 วินาที
         window.addEventListener('DOMContentLoaded', loadAllMembersStatus);
-        setInterval(loadAllMembersStatus, 15000); // อัปเดตออโต้ทุกๆ 15 วินาที
+        setInterval(loadAllMembersStatus, 15000);
     </script>
 </body>
 </html>
