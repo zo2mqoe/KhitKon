@@ -212,10 +212,8 @@
             }, 1000);
         }
 
-        // ระบบตรวจจับการออกจากหน้าเว็บ / สลับหน้าจอเพื่อหยุดเพลงทันที
         document.addEventListener("visibilitychange", function() {
             const music = document.getElementById('bgMusic');
-            
             if (document.hidden) {
                 music.pause();
             } else {
@@ -242,7 +240,7 @@
             for (let i = 0; i < cards.length; i++) {
                 const cardCategory = cards[i].getAttribute('data-category');
                 if (cardCategory === category) {
-                    cards[i].style.display = "flex"; // เปลี่ยนเป็น flex เพื่อรักษาโครงสร้างปุ่ม TikTok ขวาขอบสุด
+                    cards[i].style.display = "flex";
                 } else {
                     cards[i].style.display = "none";
                 }
@@ -255,14 +253,12 @@
         function goBackHome() {
             const homeMenu = document.getElementById('homeMenu');
             const listPage = document.getElementById('listPage');
-            
             listPage.classList.add('hidden');
             homeMenu.classList.remove('hidden');
         }
 
         document.getElementById('homeMenu').classList.remove('hidden');
 
-        // ฟังก์ชันระบบค้นหารายชื่อแบบ Real-time
         function searchMembers() {
             const input = document.getElementById('searchInput');
             const filter = input.value.toLowerCase();
@@ -307,7 +303,7 @@
             statusDot.innerHTML = "";
             if (wrapper) wrapper.classList.remove('opacity-60');
 
-            // แสดงสีวงกลมสถานะ
+            // แสดงสีวงกลมสถานะตาม Discord
             if (status === 'online') {
                 statusDot.classList.add('bg-[#23a55a]');
             } else if (status === 'idle') {
@@ -326,7 +322,6 @@
 
         async function loadAllMembersStatus() {
             const cards = document.querySelectorAll('.member-card');
-            
             cards.forEach(async (card) => {
                 const discordId = card.getAttribute('data-discord-id');
                 if (!discordId || discordId.includes('ใส่_ID')) return;
@@ -347,7 +342,7 @@
         }
 
         window.addEventListener('DOMContentLoaded', loadAllMembersStatus);
-        setInterval(loadAllMembersStatus, 15000); // อัปเดตสถานะออโต้ทุกๆ 15 วินาที
+        setInterval(loadAllMembersStatus, 15000); // อัปเดตออโต้ทุกๆ 15 วินาที
     </script>
 </body>
 </html>
