@@ -34,11 +34,91 @@
                 visibility: hidden;
             }
         }
+
+        /* สไตล์สำหรับกลีบซากุระร่วง */
+        .sakura {
+            position: fixed;
+            top: -10px;
+            z-index: 5;
+            pointer-events: none;
+            background: linear-gradient(180deg, #ffb7c5, #ff9cae);
+            border-radius: 100% 0% 100% 100% / 100% 0% 100% 100%;
+            transform-origin: left top;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                top: -10px;
+                transform: translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                top: 105vh;
+                transform: translateX(150px) rotate(360deg);
+                opacity: 0.3;
+            }
+        }
+
+        /* แอนิเมชันปุ่มกระดิ่งสั่นดุ๊กดิ๊ก */
+        @keyframes ring-bell {
+            0%, 100% { transform: rotate(0); }
+            20%, 60% { transform: rotate(15deg); }
+            40%, 80% { transform: rotate(-15deg); }
+        }
+        .animate-bell {
+            animation: ring-bell 2s infinite ease-in-out;
+        }
+
+        /* เอฟเฟกต์ 3D และเรืองแสงนีออนของการ์ดสมาชิกเมื่อ Hover */
+        .member-card {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            perspective: 1000px;
+        }
+        .member-card:hover {
+            transform: translateY(-4px) scale(1.015) rotateX(2deg);
+            box-shadow: 0 10px 20px -5px rgba(217, 70, 239, 0.15), 0 0 15px 1px rgba(217, 70, 239, 0.3);
+            border-color: rgba(244, 114, 182, 0.5);
+            background-color: rgba(255, 255, 255, 0.98);
+        }
     </style>
 </head>
-<body style="background-image: url('https://i.postimg.cc/ZnNRV6QM/cc29c1ead492ca4fab7efc6ccfffee66.jpg');" class="bg-[#fff0f6] bg-cover bg-center bg-no-repeat text-gray-700 min-h-screen flex flex-col justify-between selection:bg-pink-200 selection:text-pink-800 relative overflow-x-hidden">
+<body style="background-image: url('https://i.postimg.cc/PJDx2179/a75f58c361ec69fe013849afba5cd295.jpg');"
+      class="bg-[#fff0f6] bg-cover bg-center bg-no-repeat bg-fixed text-gray-700 min-h-screen flex flex-col justify-between selection:bg-pink-200 selection:text-pink-800 relative overflow-x-hidden">
 
     <audio id="bgMusic" src="Hurry up feat.7Vibes.mp3" loop></audio>
+
+    <div id="topControls" class="hidden fixed top-4 right-4 z-40 flex gap-2">
+        <button onclick="openNotice()" class="w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm border border-pink-200 text-pink-500 hover:bg-pink-50 flex items-center justify-center transition-all shadow-sm active:scale-95 cursor-pointer">
+            <i class="fa-solid fa-bell animate-bell"></i>
+        </button>
+        <button id="musicControlBtn" onclick="toggleMusic()" class="w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm border border-pink-200 text-pink-500 hover:bg-pink-50 flex items-center justify-center transition-all shadow-sm active:scale-95 cursor-pointer">
+            <i id="musicIcon" class="fa-solid fa-volume-high"></i>
+        </button>
+    </div>
+
+    <div id="noticeModal" class="hidden fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 transition-all duration-300 opacity-0">
+        <div class="bg-[#faf3e0] border-4 border-[#8c6239] rounded-xl max-w-md w-full shadow-2xl relative overflow-hidden p-6 text-center border-t-[20px] border-t-[#c1272d]">
+            <div class="absolute top-[-12px] left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-[#faf3e0] border-2 border-[#8c6239] flex items-center justify-center">
+                <div class="w-1.5 h-1.5 rounded-full bg-red-600"></div>
+            </div>
+            
+            <h3 class="font-title text-xl font-bold text-[#c1272d] tracking-wide mb-3 flex items-center justify-center gap-2">
+                🏮 ข่าวสารและประกาศกลุ่ม 🏮
+            </h3>
+            
+            <div class="border-y border-dashed border-[#8c6239]/40 py-4 my-3 text-left space-y-2.5 text-amber-950 text-sm">
+                <p class="font-medium text-center text-amber-800">ยินดีต้อนรับสู่แก๊งคิดก่อน (KHIT KON)</p>
+                <p>• เว็บไซต์อัปเดตรูปโปรไฟล์และสถานะดิสคอร์ดอัตโนมัติครบทุกคนแล้ว</p>
+                <p>• สมาชิกท่านใดต้องการแก้ไขลิงก์ TikTok แจ้งหัวเเก๊งได้เลย</p>
+                <p>• ขอให้สนุกกับการพูดคุยและติดตามผลงานของพวกเราครับ!</p>
+            </div>
+
+            <button onclick="closeNotice()" class="mt-2 px-5 py-2 bg-[#c1272d] hover:bg-[#9e1f24] text-white rounded-lg text-xs font-semibold tracking-wider uppercase shadow-md transition-colors cursor-pointer active:scale-95">
+                ปิดหน้าต่าง
+            </button>
+        </div>
+    </div>
 
     <div id="splashScreen" class="fixed inset-0 bg-[#fff0f6] z-50 flex flex-col items-center justify-center transition-all duration-500">
         <div id="logoContainer" class="text-center cursor-pointer p-6 flex flex-col items-center gap-4 active:scale-95 transition-transform" onclick="startWebsite()">
@@ -68,7 +148,7 @@
             </button>
         </div>
 
-        <div id="listPage" class="hidden bg-white rounded-xl border border-pink-100 p-5 md:p-6 shadow-md transition-all duration-300 relative z-20">
+        <div id="listPage" class="hidden bg-white/95 backdrop-blur-md rounded-xl border border-pink-100 p-5 md:p-6 shadow-md transition-all duration-300 relative z-20">
             
             <div class="flex items-center justify-between border-b border-pink-50 pb-4 mb-4">
                 <h2 id="listTitle" class="text-xl font-medium text-pink-600">รายชื่อสมาชิก</h2>
@@ -86,219 +166,7 @@
                 </span>
             </div>
 
-            <div class="space-y-3" id="memberList">
-                
-                <div class="member-card flex items-center justify-between p-3.5 bg-[#fdf8fa] hover:bg-pink-50/50 border border-pink-100 rounded-lg transition-all duration-150" data-category="winterfell" data-discord-id="1470405225390280840">
-                    <div class="flex items-center gap-3.5">
-                        <div class="avatar-wrapper w-11 h-11 rounded-full bg-pink-100 border border-pink-200 flex-shrink-0 flex items-center justify-center overflow-hidden relative">
-                            <img class="user-avatar w-full h-full object-cover" src="https://i.postimg.cc/c1hz2BLP/KHIT-KON.png" alt="Theboss">
-                        </div>
-                        <div>
-                            <h3 class="name-field text-sm font-medium text-gray-800">Peater KK</h3>
-                            <p class="text-xs text-gray-400 mt-0.5">tiktok.com/@peatermax</p>
-                        </div>
-                    </div>
-                    <a href="https://www.tiktok.com/@peatermax" target="_blank" class="w-8 h-8 rounded-full bg-white border border-pink-100 text-pink-400 hover:bg-black hover:text-white flex items-center justify-center transition-colors shadow-sm relative z-30 flex-shrink-0">
-                        <i class="fa-brands fa-tiktok text-xs"></i>
-                    </a>
-                </div>
-
-                <div class="member-card flex items-center justify-between p-3.5 bg-[#fdf8fa] hover:bg-pink-50/50 border border-pink-100 rounded-lg transition-all duration-150" data-category="winterfell" data-discord-id="1359811739650228416">
-                   <div class="flex items-center gap-3.5">
-                        <div class="avatar-wrapper w-11 h-11 rounded-full bg-pink-100 border border-pink-200 flex-shrink-0 flex items-center justify-center overflow-hidden relative">
-                            <img class="user-avatar w-full h-full object-cover" src="https://i.postimg.cc/c1hz2BLP/KHIT-KON.png" alt="Arthur">
-                        </div>
-                        <div>
-                            <h3 class="name-field text-sm font-medium text-gray-800">Wutthipat KK</h3>
-                            <p class="text-xs text-gray-400 mt-0.5">tiktok.com/@wuttiphat_18</p>
-                        </div>
-                    </div>
-                    <a href="https://www.tiktok.com/@wuttiphat_18" target="_blank" class="w-8 h-8 rounded-full bg-white border border-pink-100 text-pink-400 hover:bg-black hover:text-white flex items-center justify-center transition-colors shadow-sm relative z-30 flex-shrink-0">
-                        <i class="fa-brands fa-tiktok text-xs"></i>
-                    </a>
-                </div>
-
-                <div class="member-card flex items-center justify-between p-3.5 bg-[#fdf8fa] hover:bg-pink-50/50 border border-pink-100 rounded-lg transition-all duration-150" data-category="winterfell" data-discord-id="1217107258639519794">
-                    <div class="flex items-center gap-3.5">
-                        <div class="avatar-wrapper w-11 h-11 rounded-full bg-pink-100 border border-pink-200 flex-shrink-0 flex items-center justify-center overflow-hidden relative">
-                            <img class="user-avatar w-full h-full object-cover" src="https://i.postimg.cc/c1hz2BLP/KHIT-KON.png" alt="Vistra">
-                        </div>
-                        <div>
-                            <h3 class="name-field text-sm font-medium text-gray-800">Diamond KK</h3>
-                            <p class="text-xs text-gray-400 mt-0.5">tiktok.com/@useri2objrfuwj</p>
-                        </div>
-                    </div>
-                    <a href="https://www.tiktok.com/@useri2objrfuwj" target="_blank" class="w-8 h-8 rounded-full bg-white border border-pink-100 text-pink-400 hover:bg-black hover:text-white flex items-center justify-center transition-colors shadow-sm relative z-30 flex-shrink-0">
-                        <i class="fa-brands fa-tiktok text-xs"></i>
-                    </a>
-                </div>
-
-                <div class="member-card flex items-center justify-between p-3.5 bg-[#fdf8fa] hover:bg-pink-50/50 border border-pink-100 rounded-lg transition-all duration-150" data-category="winterfell" data-discord-id="1370213825319800862">
-                    <div class="flex items-center gap-3.5">
-                        <div class="avatar-wrapper w-11 h-11 rounded-full bg-pink-100 border border-pink-200 flex-shrink-0 flex items-center justify-center overflow-hidden relative">
-                            <img class="user-avatar w-full h-full object-cover" src="https://i.postimg.cc/c1hz2BLP/KHIT-KON.png" alt="Arthur">
-                        </div>
-                        <div>
-                            <h3 class="name-field text-sm font-medium text-gray-800">Joke KK</h3>
-                            <p class="text-xs text-gray-400 mt-0.5">tiktok.com/@</p>
-                        </div>
-                    </div>
-                    <a href="https://www.tiktok.com/@" target="_blank" class="w-8 h-8 rounded-full bg-white border border-pink-100 text-pink-400 hover:bg-black hover:text-white flex items-center justify-center transition-colors shadow-sm relative z-30 flex-shrink-0">
-                        <i class="fa-brands fa-tiktok text-xs"></i>
-                    </a>
-                </div>
-
-                <div class="member-card flex items-center justify-between p-3.5 bg-[#fdf8fa] hover:bg-pink-50/50 border border-pink-100 rounded-lg transition-all duration-150" data-category="winterfell" data-discord-id="1373323220123648071">
-                    <div class="flex items-center gap-3.5">
-                        <div class="avatar-wrapper w-11 h-11 rounded-full bg-pink-100 border border-pink-200 flex-shrink-0 flex items-center justify-center overflow-hidden relative">
-                            <img class="user-avatar w-full h-full object-cover" src="https://i.postimg.cc/c1hz2BLP/KHIT-KON.png" alt="Arthur">
-                        </div>
-                        <div>
-                            <h3 class="name-field text-sm font-medium text-gray-800">Jazz KK</h3>
-                            <p class="text-xs text-gray-400 mt-0.5">tiktok.com/@</p>
-                        </div>
-                    </div>
-                    <a href="https://www.tiktok.com/@" target="_blank" class="w-8 h-8 rounded-full bg-white border border-pink-100 text-pink-400 hover:bg-black hover:text-white flex items-center justify-center transition-colors shadow-sm relative z-30 flex-shrink-0">
-                        <i class="fa-brands fa-tiktok text-xs"></i>
-                    </a>
-                </div>
-
-                <div class="member-card flex items-center justify-between p-3.5 bg-[#fdf8fa] hover:bg-pink-50/50 border border-pink-100 rounded-lg transition-all duration-150" data-category="winterfell" data-discord-id="1422859919455158302">
-                    <div class="flex items-center gap-3.5">
-                        <div class="avatar-wrapper w-11 h-11 rounded-full bg-pink-100 border border-pink-200 flex-shrink-0 flex items-center justify-center overflow-hidden relative">
-                            <img class="user-avatar w-full h-full object-cover" src="https://i.postimg.cc/c1hz2BLP/KHIT-KON.png" alt="Arthur">
-                        </div>
-                        <div>
-                            <h3 class="name-field text-sm font-medium text-gray-800">Beem KK</h3>
-                            <p class="text-xs text-gray-400 mt-0.5">tiktok.com/@.ice882</p>
-                        </div>
-                    </div>
-                    <a href="https://www.tiktok.com/@.ice882" target="_blank" class="w-8 h-8 rounded-full bg-white border border-pink-100 text-pink-400 hover:bg-black hover:text-white flex items-center justify-center transition-colors shadow-sm relative z-30 flex-shrink-0">
-                        <i class="fa-brands fa-tiktok text-xs"></i>
-                    </a>
-                </div>
-
-                <div class="member-card flex items-center justify-between p-3.5 bg-[#fdf8fa] hover:bg-pink-50/50 border border-pink-100 rounded-lg transition-all duration-150" data-category="winterfell" data-discord-id="1256620262556958796">
-                    <div class="flex items-center gap-3.5">
-                        <div class="avatar-wrapper w-11 h-11 rounded-full bg-pink-100 border border-pink-200 flex-shrink-0 flex items-center justify-center overflow-hidden relative">
-                            <img class="user-avatar w-full h-full object-cover" src="https://i.postimg.cc/c1hz2BLP/KHIT-KON.png" alt="Arthur">
-                        </div>
-                        <div>
-                            <h3 class="name-field text-sm font-medium text-gray-800">Lion KK</h3>
-                            <p class="text-xs text-gray-400 mt-0.5">tiktok.com/@</p>
-                        </div>
-                    </div>
-                    <a href="https://www.tiktok.com/@" target="_blank" class="w-8 h-8 rounded-full bg-white border border-pink-100 text-pink-400 hover:bg-black hover:text-white flex items-center justify-center transition-colors shadow-sm relative z-30 flex-shrink-0">
-                        <i class="fa-brands fa-tiktok text-xs"></i>
-                    </a>
-                </div>
-
-                <div class="member-card flex items-center justify-between p-3.5 bg-[#fdf8fa] hover:bg-pink-50/50 border border-pink-100 rounded-lg transition-all duration-150" data-category="winterfell" data-discord-id="1279728062069473341">
-                    <div class="flex items-center gap-3.5">
-                        <div class="avatar-wrapper w-11 h-11 rounded-full bg-pink-100 border border-pink-200 flex-shrink-0 flex items-center justify-center overflow-hidden relative">
-                            <img class="user-avatar w-full h-full object-cover" src="https://i.postimg.cc/c1hz2BLP/KHIT-KON.png" alt="Arthur">
-                        </div>
-                        <div>
-                            <h3 class="name-field text-sm font-medium text-gray-800">JJ KK</h3>
-                            <p class="text-xs text-gray-400 mt-0.5">tiktok.com/@jj_kub17</p>
-                        </div>
-                    </div>
-                    <a href="https://www.tiktok.com/@jj_kub17" target="_blank" class="w-8 h-8 rounded-full bg-white border border-pink-100 text-pink-400 hover:bg-black hover:text-white flex items-center justify-center transition-colors shadow-sm relative z-30 flex-shrink-0">
-                        <i class="fa-brands fa-tiktok text-xs"></i>
-                    </a>
-                </div>
-
-                <div class="member-card flex items-center justify-between p-3.5 bg-[#fdf8fa] hover:bg-pink-50/50 border border-pink-100 rounded-lg transition-all duration-150" data-category="winterfell" data-discord-id="838780227823992863">
-                    <div class="flex items-center gap-3.5">
-                        <div class="avatar-wrapper w-11 h-11 rounded-full bg-pink-100 border border-pink-200 flex-shrink-0 flex items-center justify-center overflow-hidden relative">
-                            <img class="user-avatar w-full h-full object-cover" src="https://i.postimg.cc/c1hz2BLP/KHIT-KON.png" alt="Arthur">
-                        </div>
-                        <div>
-                            <h3 class="name-field text-sm font-medium text-gray-800">Orinji KK</h3>
-                            <p class="text-xs text-gray-400 mt-0.5">tiktok.com/@janeeee647</p>
-                        </div>
-                    </div>
-                    <a href="https://www.tiktok.com/@janeeee647" target="_blank" class="w-8 h-8 rounded-full bg-white border border-pink-100 text-pink-400 hover:bg-black hover:text-white flex items-center justify-center transition-colors shadow-sm relative z-30 flex-shrink-0">
-                        <i class="fa-brands fa-tiktok text-xs"></i>
-                    </a>
-                </div>
-
-                <div class="member-card flex items-center justify-between p-3.5 bg-[#fdf8fa] hover:bg-pink-50/50 border border-pink-100 rounded-lg transition-all duration-150" data-category="winterfell" data-discord-id="1455946258580504707">
-                    <div class="flex items-center gap-3.5">
-                        <div class="avatar-wrapper w-11 h-11 rounded-full bg-pink-100 border border-pink-200 flex-shrink-0 flex items-center justify-center overflow-hidden relative">
-                            <img class="user-avatar w-full h-full object-cover" src="https://i.postimg.cc/c1hz2BLP/KHIT-KON.png" alt="Arthur">
-                        </div>
-                        <div>
-                            <h3 class="name-field text-sm font-medium text-gray-800">Icas KK</h3>
-                            <p class="text-xs text-gray-400 mt-0.5">tiktok.com/@lucxssss_4</p>
-                        </div>
-                    </div>
-                    <a href="https://www.tiktok.com/@lucxssss_4" target="_blank" class="w-8 h-8 rounded-full bg-white border border-pink-100 text-pink-400 hover:bg-black hover:text-white flex items-center justify-center transition-colors shadow-sm relative z-30 flex-shrink-0">
-                        <i class="fa-brands fa-tiktok text-xs"></i>
-                    </a>
-                </div>
-
-                <div class="member-card flex items-center justify-between p-3.5 bg-[#fdf8fa] hover:bg-pink-50/50 border border-pink-100 rounded-lg transition-all duration-150" data-category="winterfell" data-discord-id="1420662509832245248">
-                    <div class="flex items-center gap-3.5">
-                        <div class="avatar-wrapper w-11 h-11 rounded-full bg-pink-100 border border-pink-200 flex-shrink-0 flex items-center justify-center overflow-hidden relative">
-                            <img class="user-avatar w-full h-full object-cover" src="https://i.postimg.cc/c1hz2BLP/KHIT-KON.png" alt="Arthur">
-                        </div>
-                        <div>
-                            <h3 class="name-field text-sm font-medium text-gray-800">Why KK</h3>
-                            <p class="text-xs text-gray-400 mt-0.5">tiktok.com/@</p>
-                        </div>
-                    </div>
-                    <a href="https://www.tiktok.com/@" target="_blank" class="w-8 h-8 rounded-full bg-white border border-pink-100 text-pink-400 hover:bg-black hover:text-white flex items-center justify-center transition-colors shadow-sm relative z-30 flex-shrink-0">
-                        <i class="fa-brands fa-tiktok text-xs"></i>
-                    </a>
-                </div>
-                
-                <div class="member-card flex items-center justify-between p-3.5 bg-[#fdf8fa] hover:bg-pink-50/50 border border-pink-100 rounded-lg transition-all duration-150" data-category="unfair" data-discord-id="1238721926965493830">
-                    <div class="flex items-center gap-3.5">
-                        <div class="avatar-wrapper w-11 h-11 rounded-full bg-pink-200 border border-pink-300 flex-shrink-0 flex items-center justify-center overflow-hidden relative">
-                            <img class="user-avatar w-full h-full object-cover" src="https://i.postimg.cc/c1hz2BLP/KHIT-KON.png" alt="Owen">
-                        </div>
-                        <div>
-                            <h3 class="name-field text-sm font-medium text-gray-800">Owen KK (Owner)</h3>
-                            <p class="text-xs text-gray-400 mt-0.5">tiktok.com/@upze12</p>
-                        </div>
-                    </div>
-                    <a href="https://www.tiktok.com/@upze12" target="_blank" class="w-8 h-8 rounded-full bg-white border border-pink-100 text-pink-400 hover:bg-black hover:text-white flex items-center justify-center transition-colors shadow-sm relative z-30 flex-shrink-0">
-                        <i class="fa-brands fa-tiktok text-xs"></i>
-                    </a>
-                </div>
-
-                <div class="member-card flex items-center justify-between p-3.5 bg-[#fdf8fa] hover:bg-pink-50/50 border border-pink-100 rounded-lg transition-all duration-150" data-category="unfair" data-discord-id="707670973486203014">
-                    <div class="flex items-center gap-3.5">
-                        <div class="avatar-wrapper w-11 h-11 rounded-full bg-pink-200 border border-pink-300 flex-shrink-0 flex items-center justify-center overflow-hidden relative">
-                            <img class="user-avatar w-full h-full object-cover" src="https://i.postimg.cc/c1hz2BLP/KHIT-KON.png" alt="Mumu">
-                        </div>
-                        <div>
-                            <h3 class="name-field text-sm font-medium text-gray-800">รอง Mumu KK</h3>
-                            <p class="text-xs text-gray-400 mt-0.5">tiktok.com/@mx.mzz </p>
-                        </div>
-                    </div>
-                    <a href="https://www.tiktok.com/@mx.mzz" target="_blank" class="w-8 h-8 rounded-full bg-white border border-pink-100 text-pink-400 hover:bg-black hover:text-white flex items-center justify-center transition-colors shadow-sm relative z-30 flex-shrink-0">
-                        <i class="fa-brands fa-tiktok text-xs"></i>
-                    </a>
-                </div>
-
-                <div class="member-card flex items-center justify-between p-3.5 bg-[#fdf8fa] hover:bg-pink-50/50 border border-pink-100 rounded-lg transition-all duration-150" data-category="unfair" data-discord-id="1490224511847501986">
-                    <div class="flex items-center gap-3.5">
-                        <div class="avatar-wrapper w-11 h-11 rounded-full bg-pink-200 border border-pink-300 flex-shrink-0 flex items-center justify-center overflow-hidden relative">
-                            <img class="user-avatar w-full h-full object-cover" src="https://i.postimg.cc/c1hz2BLP/KHIT-KON.png" alt="Dorothy">
-                        </div>
-                        <div>
-                            <h3 class="name-field text-sm font-medium text-gray-800">ที่ปรึกษา Robin KK</h3>
-                            <p class="text-xs text-gray-400 mt-0.5">tiktok.com/@wakp_2</p>
-                        </div>
-                    </div>
-                    <a href="https://www.tiktok.com/@wakp_2" target="_blank" class="w-8 h-8 rounded-full bg-white border border-pink-100 text-pink-400 hover:bg-black hover:text-white flex items-center justify-center transition-colors shadow-sm relative z-30 flex-shrink-0">
-                        <i class="fa-brands fa-tiktok text-xs"></i>
-                    </a>
-                </div>
-
-            </div>
+            <div class="space-y-3" id="memberList"></div>
         </div>
     </div>
 
@@ -307,55 +175,107 @@
     </footer>
 
     <script>
-        let isMusicPlaying = false;
-        
-        // ================= ระบบเปลี่ยนรูปพื้นหลังอัตโนมัติทุกๆ 5 วินาที (ใส่ลิงก์จริงและเปลี่ยนทันที) =================
-        const backgroundImages = [
-            'https://i.postimg.cc/PJDx2179/a75f58c361ec69fe013849afba5cd295.jpg'
+        // ================= [ฐานข้อมูลรายชื่อสมาชิกกลุ่ม] =================
+        const membersData = [
+            // หมวดหมู่ winterfell (MEMBER (KK))
+            { name: "Peater KK", sub: "tiktok.com/@peatermax", link: "https://www.tiktok.com/@peatermax", category: "winterfell", discordId: "1470405225390280840" },
+            { name: "Wutthipat KK", sub: "tiktok.com/@wuttiphat_18", link: "https://www.tiktok.com/@wuttiphat_18", category: "winterfell", discordId: "1359811739650228416" },
+            { name: "Diamond KK", sub: "tiktok.com/@useri2objrfuwj", link: "https://www.tiktok.com/@useri2objrfuwj", category: "winterfell", discordId: "1217107258639519794" },
+            { name: "Joke KK", sub: "tiktok.com/@", link: "https://www.tiktok.com/@", category: "winterfell", discordId: "1370213825319800862" },
+            { name: "Jazz KK", sub: "tiktok.com/@", link: "https://www.tiktok.com/@", category: "winterfell", discordId: "1373323220123648071" },
+            { name: "Beem KK", sub: "tiktok.com/@.ice882", link: "https://www.tiktok.com/@.ice882", category: "winterfell", discordId: "1422859919455158302" },
+            { name: "Lion KK", sub: "tiktok.com/@", link: "https://www.tiktok.com/@", category: "winterfell", discordId: "1256620262556958796" },
+            { name: "JJ KK", sub: "tiktok.com/@jj_kub17", link: "https://www.tiktok.com/@jj_kub17", category: "winterfell", discordId: "1279728062069473341" },
+            { name: "Orinji KK", sub: "tiktok.com/@janeeee647", link: "https://www.tiktok.com/@janeeee647", category: "winterfell", discordId: "838780227823992863" },
+            { name: "Icas KK", sub: "tiktok.com/@lucxssss_4", link: "https://www.tiktok.com/@lucxssss_4", category: "winterfell", discordId: "1455946258580504707" },
+            { name: "Why KK", sub: "tiktok.com/@", link: "https://www.tiktok.com/@", category: "winterfell", discordId: "1420662509832245248" },
+            
+            // หมวดหมู่ unfair (KHIT KON GANG)
+            { name: "Owen KK (Owner)", sub: "tiktok.com/@upze12", link: "https://www.tiktok.com/@upze12", category: "unfair", discordId: "1238721926965493830", isSpecial: true },
+            { name: "รอง Mumu KK", sub: "tiktok.com/@mx.mzz", link: "https://www.tiktok.com/@mx.mzz", category: "unfair", discordId: "707670973486203014", isSpecial: true },
+            { name: "ที่ปรึกษา Robin KK", sub: "tiktok.com/@wakp_2", link: "https://www.tiktok.com/@wakp_2", category: "unfair", discordId: "1490224511847501986", isSpecial: true }
         ];
 
-        let currentImgIndex = 0;
+        // ฟังก์ชันวนลูปสร้างการ์ดสมาชิกลงหน้า HTML อัตโนมัติ
+        function renderMembers() {
+            const container = document.getElementById('memberList');
+            container.innerHTML = ''; 
 
-        // ดึงภาพทั้งหมดมาเก็บไว้ใน Cache ล่วงหน้าตั้งแต่วินาทีแรกที่เปิดเว็บ ป้องกันการหน่วงหรือกระพริบขาว
-        function preloadBackgroundImages() {
-            if (backgroundImages.length === 0) return;
-            backgroundImages.forEach(url => {
-                const img = new Image();
-                img.src = url;
+            membersData.forEach(member => {
+                const avatarColorClass = member.isSpecial ? 'bg-pink-200 border-pink-300' : 'bg-pink-100 border-pink-200';
+                
+                const cardHTML = `
+                    <div class="member-card flex items-center justify-between p-3.5 bg-[#fdf8fa] border border-pink-100 rounded-lg cursor-pointer" 
+                         data-category="${member.category}" 
+                         data-discord-id="${member.discordId}">
+                        <div class="flex items-center gap-3.5">
+                            <div class="avatar-wrapper w-11 h-11 rounded-full ${avatarColorClass} flex-shrink-0 flex items-center justify-center overflow-hidden relative">
+                                <img class="user-avatar w-full h-full object-cover" src="https://i.postimg.cc/c1hz2BLP/KHIT-KON.png" alt="${member.name}">
+                            </div>
+                            <div>
+                                <h3 class="name-field text-sm font-medium text-gray-800">${member.name}</h3>
+                                <p class="text-xs text-gray-400 mt-0.5">${member.sub}</p>
+                                <p class="user-presence text-[11px] text-pink-500 font-medium mt-0.5 hidden flex items-center gap-1"></p>
+                            </div>
+                        </div>
+                        <a href="${member.link}" target="_blank" class="w-8 h-8 rounded-full bg-white border border-pink-100 text-pink-400 hover:bg-black hover:text-white flex items-center justify-center transition-colors shadow-sm relative z-30 flex-shrink-0">
+                            <i class="fa-brands fa-tiktok text-xs"></i>
+                        </a>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', cardHTML);
             });
         }
 
-        function changeBackground() {
-            if (backgroundImages.length === 0) return;
-            currentImgIndex = (currentImgIndex + 1) % backgroundImages.length;
-            document.body.style.backgroundImage = `url('${backgroundImages[currentImgIndex]}')`;
-        }
-
-        // เริ่มโหลดรูปภาพล่วงหน้า และตั้งค่าสลับภาพทันทีทุกๆ 5 วินาที (5000ms)
-        preloadBackgroundImages();
-        setInterval(changeBackground, 5000);
+        renderMembers();
 
 
-        // 1. ฟังก์ชันทำงานเมื่อผู้ใช้คลิกโลโก้หน้าแรก
+        // ================= [ระบบควบคุมเสียงเพลง] =================
+        let isMusicPlaying = false;
+
         function startWebsite() {
             const music = document.getElementById('bgMusic');
             const logo = document.getElementById('logoContainer');
             const splash = document.getElementById('splashScreen');
+            const topControls = document.getElementById('topControls');
 
             music.play().then(() => {
                 isMusicPlaying = true; 
+                updateMusicIcon();
             }).catch(error => {
-                console.log("การเล่นเพลงอัตโนมัติถูกบล็อกชั่วคราว: ", error);
+                console.log("การเล่นเพลงถูกบล็อกชั่วคราว: ", error);
             });
             logo.classList.add('slide-down-fade');
 
             setTimeout(() => {
                 splash.style.opacity = '0';
                 splash.style.visibility = 'hidden';
+                topControls.classList.remove('hidden'); 
                 setTimeout(() => {
                     splash.remove(); 
                 }, 500);
             }, 1000);
+        }
+
+        function toggleMusic() {
+            const music = document.getElementById('bgMusic');
+            if (isMusicPlaying) {
+                music.pause();
+                isMusicPlaying = false;
+            } else {
+                music.play().catch(err => console.log(err));
+                isMusicPlaying = true;
+            }
+            updateMusicIcon();
+        }
+
+        function updateMusicIcon() {
+            const icon = document.getElementById('musicIcon');
+            if (isMusicPlaying) {
+                icon.className = "fa-solid fa-volume-high";
+            } else {
+                icon.className = "fa-solid fa-volume-xmark text-gray-400";
+            }
         }
 
         document.addEventListener("visibilitychange", function() {
@@ -369,7 +289,26 @@
             }
         });
 
-        // 2. ระบบจัดการหน้าและคัดกรองรายชื่อกลุ่ม
+
+        // ================= [ระบบควบคุมกล่องประกาศป๊อปอัป] =================
+        function openNotice() {
+            const modal = document.getElementById('noticeModal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+            }, 10);
+        }
+
+        function closeNotice() {
+            const modal = document.getElementById('noticeModal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+
+        // ================= [ระบบคัดกรองหน้าเมนูสมาชิก] =================
         let currentCategory = 'all';
         function goToPage(category) {
             currentCategory = category;
@@ -425,18 +364,43 @@
             }
         }
 
-        // ================= ระบบ Lanyard API ดึงสถานะและรูปภาพออโต้ =================
-        function applyDiscordStatus(card, status, avatarId, discordId) {
+
+        // ================= [ระบบเอฟเฟกต์ซากุระร่วง] =================
+        function createSakura() {
+            const sakura = document.createElement('div');
+            sakura.classList.add('sakura');
+            
+            const size = Math.random() * 8 + 6;
+            sakura.style.width = `${size}px`;
+            sakura.style.height = `${size}px`;
+            
+            sakura.style.left = Math.random() * 100 + 'vw';
+            
+            const duration = Math.random() * 5 + 4;
+            sakura.style.animationDuration = duration + 's';
+            
+            sakura.style.opacity = Math.random() * 0.7 + 0.3;
+            
+            document.body.appendChild(sakura);
+            
+            setTimeout(() => {
+                sakura.remove();
+            }, duration * 1000);
+        }
+        setInterval(createSakura, 300);
+
+
+        // ================= [ระบบดึงข้อมูลและอัปเดตสถานะ + กิจกรรม Real-time] =================
+        function applyDiscordStatusAndPresence(card, status, avatarId, discordId, lanyardData = null) {
             const wrapper = card.querySelector('.avatar-wrapper');
             const avatarImg = card.querySelector('.user-avatar');
+            const presenceEl = card.querySelector('.user-presence');
             if (!wrapper) return;
 
-            // สลับรูปโปรไฟล์ออโต้ตามดิสคอร์ด
             if (avatarId && avatarImg) {
                 avatarImg.src = `https://cdn.discordapp.com/avatars/${discordId}/${avatarId}.png?size=128`;
             }
 
-            // ตรวจสอบ/สร้างจุดแสดงวงกลมสถานะ
             let statusDot = card.querySelector('.user-status');
             if (!statusDot) {
                 statusDot = document.createElement('span');
@@ -444,13 +408,11 @@
                 wrapper.appendChild(statusDot);
             }
 
-            // ล้างค่าสถานะเก่าออกทั้งหมดก่อนกำหนดค่าใหม่
             statusDot.className = "user-status absolute bottom-0 right-0 w-3.5 h-3.5 border-2 border-[#fdf8fa] rounded-full shadow-sm flex items-center justify-center overflow-hidden";
             statusDot.style.clipPath = "";
             statusDot.innerHTML = "";
             wrapper.classList.remove('opacity-60');
 
-            // จัดการแสดงผลสีสถานะ
             if (status === 'online') {
                 statusDot.classList.add('bg-[#23a55a]');
             } else if (status === 'idle') {
@@ -465,13 +427,34 @@
                 statusDot.innerHTML = `<span class="w-1.5 h-1.5 bg-[#fdf8fa] rounded-full"></span>`;
                 wrapper.classList.add('opacity-60');
             }
+
+            if (presenceEl) {
+                presenceEl.innerHTML = "";
+                presenceEl.classList.add('hidden');
+
+                if (lanyardData && status !== 'offline') {
+                    if (lanyardData.listening_to_spotify && lanyardData.spotify) {
+                        const songName = lanyardData.spotify.track;
+                        const artist = lanyardData.spotify.artist;
+                        presenceEl.innerHTML = `<i class="fa-solid fa-music text-green-500 animate-pulse text-[10px]"></i> <span class="truncate max-w-[150px]">ฟังเพลง: ${songName} - ${artist}</span>`;
+                        presenceEl.classList.remove('hidden');
+                    } 
+                    else if (lanyardData.activities && lanyardData.activities.length > 0) {
+                        const gameActivity = lanyardData.activities.find(act => act.type === 0);
+                        if (gameActivity) {
+                            presenceEl.innerHTML = `<i class="fa-solid fa-gamepad text-pink-500 text-[10px]"></i> <span class="truncate max-w-[150px]">เล่นเกม: ${gameActivity.name}</span>`;
+                            presenceEl.classList.remove('hidden');
+                        }
+                    }
+                }
+            }
         }
 
         async function loadAllMembersStatus() {
             const cards = document.querySelectorAll('.member-card');
             for (const card of cards) {
                 const discordId = card.getAttribute('data-discord-id');
-                if (!discordId || discordId.includes('ใส่_ID')) continue;
+                if (!discordId) continue;
 
                 try {
                     const res = await fetch(`https://api.lanyard.rest/v1/users/${discordId}`);
@@ -480,16 +463,27 @@
                     if (json.success && json.data) {
                         const status = json.data.discord_status;
                         const avatarId = json.data.discord_user.avatar;
-                        applyDiscordStatus(card, status, avatarId, discordId);
+                        applyDiscordStatusAndPresence(card, status, avatarId, discordId, json.data);
+                    } else {
+                        throw new Error("Not in Lanyard server");
                     }
                 } catch (err) {
-                    console.error("Lanyard Error สำหรับไอดี: " + discordId, err);
+                    try {
+                        const backupRes = await fetch(`https://discordlookup.mesalytic.moe/v1/user/${discordId}`);
+                        const backupJson = await backupRes.json();
+                        
+                        if (backupJson && backupJson.avatar) {
+                            applyDiscordStatusAndPresence(card, 'offline', backupJson.avatar.id, discordId, null);
+                        }
+                    } catch (backupErr) {
+                        console.error("ไม่สามารถดึงข้อมูลโปรไฟล์ของไอดีนี้ได้จากทุกระบบ: " + discordId);
+                    }
                 }
             }
         }
 
         window.addEventListener('DOMContentLoaded', loadAllMembersStatus);
-        setInterval(loadAllMembersStatus, 15000);
+        setInterval(loadAllMembersStatus, 30000);
     </script>
 </body>
 </html>
