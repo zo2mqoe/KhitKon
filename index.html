@@ -177,7 +177,6 @@
     <script>
         // ================= [ฐานข้อมูลรายชื่อสมาชิกกลุ่ม] =================
         const membersData = [
-            // หมวดหมู่ winterfell (MEMBER (KK))
             { name: "Peater KK", sub: "tiktok.com/@peatermax", link: "https://www.tiktok.com/@peatermax", category: "winterfell", discordId: "1470405225390280840" },
             { name: "Wutthipat KK", sub: "tiktok.com/@wuttiphat_18", link: "https://www.tiktok.com/@wuttiphat_18", category: "winterfell", discordId: "1359811739650228416" },
             { name: "Diamond KK", sub: "tiktok.com/@useri2objrfuwj", link: "https://www.tiktok.com/@useri2objrfuwj", category: "winterfell", discordId: "1217107258639519794" },
@@ -190,13 +189,11 @@
             { name: "Icas KK", sub: "tiktok.com/@lucxssss_4", link: "https://www.tiktok.com/@lucxssss_4", category: "winterfell", discordId: "1455946258580504707" },
             { name: "Why KK", sub: "tiktok.com/@", link: "https://www.tiktok.com/@", category: "winterfell", discordId: "1420662509832245248" },
             
-            // หมวดหมู่ unfair (KHIT KON GANG)
             { name: "Owen KK (Owner)", sub: "tiktok.com/@upze12", link: "https://www.tiktok.com/@upze12", category: "unfair", discordId: "1238721926965493830", isSpecial: true },
             { name: "รอง Mumu KK", sub: "tiktok.com/@mx.mzz", link: "https://www.tiktok.com/@mx.mzz", category: "unfair", discordId: "707670973486203014", isSpecial: true },
             { name: "ที่ปรึกษา Robin KK", sub: "tiktok.com/@wakp_2", link: "https://www.tiktok.com/@wakp_2", category: "unfair", discordId: "1490224511847501986", isSpecial: true }
         ];
 
-        // ฟังก์ชันวนลูปสร้างการ์ดสมาชิกลงหน้า HTML อัตโนมัติ
         function renderMembers() {
             const container = document.getElementById('memberList');
             container.innerHTML = ''; 
@@ -226,9 +223,7 @@
                 container.insertAdjacentHTML('beforeend', cardHTML);
             });
         }
-
         renderMembers();
-
 
         // ================= [ระบบควบคุมเสียงเพลง] =================
         let isMusicPlaying = false;
@@ -289,8 +284,7 @@
             }
         });
 
-
-        // ================= [ระบบควบคุมกล่องประกาศป๊อปอัป] =================
+        // ================= [ระบบควบคุมกล่องประกาศ] =================
         function openNotice() {
             const modal = document.getElementById('noticeModal');
             modal.classList.remove('hidden');
@@ -306,7 +300,6 @@
                 modal.classList.add('hidden');
             }, 300);
         }
-
 
         // ================= [ระบบคัดกรองหน้าเมนูสมาชิก] =================
         let currentCategory = 'all';
@@ -342,8 +335,6 @@
             homeMenu.classList.remove('hidden');
         }
 
-        document.getElementById('homeMenu').classList.remove('hidden');
-
         function searchMembers() {
             const input = document.getElementById('searchInput');
             const filter = input.value.toLowerCase();
@@ -364,33 +355,23 @@
             }
         }
 
-
         // ================= [ระบบเอฟเฟกต์ซากุระร่วง] =================
         function createSakura() {
             const sakura = document.createElement('div');
             sakura.classList.add('sakura');
-            
             const size = Math.random() * 8 + 6;
             sakura.style.width = `${size}px`;
             sakura.style.height = `${size}px`;
-            
             sakura.style.left = Math.random() * 100 + 'vw';
-            
             const duration = Math.random() * 5 + 4;
             sakura.style.animationDuration = duration + 's';
-            
             sakura.style.opacity = Math.random() * 0.7 + 0.3;
-            
             document.body.appendChild(sakura);
-            
-            setTimeout(() => {
-                sakura.remove();
-            }, duration * 1000);
+            setTimeout(() => { sakura.remove(); }, duration * 1000);
         }
         setInterval(createSakura, 300);
 
-
-        // ================= [ระบบดึงข้อมูลและอัปเดตสถานะ + กิจกรรม Real-time] =================
+        // ================= [🧠 ปรับปรุงตรรกะระบบเช็ก Spotify & เกมให้แม่นยำขึ้น] =================
         function applyDiscordStatusAndPresence(card, status, avatarId, discordId, lanyardData = null) {
             const wrapper = card.querySelector('.avatar-wrapper');
             const avatarImg = card.querySelector('.user-avatar');
@@ -433,16 +414,27 @@
                 presenceEl.classList.add('hidden');
 
                 if (lanyardData && status !== 'offline') {
-                    if (lanyardData.listening_to_spotify && lanyardData.spotify) {
-                        const songName = lanyardData.spotify.track;
-                        const artist = lanyardData.spotify.artist;
+                    // 🌟 ลำดับความสำคัญที่ 1: เช็กสถานะการฟัง Spotify เป็นอันดับแรกสุด
+                    if (lanyardData.listening_to_spotify === true || lanyardData.spotify) {
+                        const songName = lanyardData.spotify?.track || "Unknown Track";
+                        const artist = lanyardData.spotify?.artist || "Unknown Artist";
                         presenceEl.innerHTML = `<i class="fa-solid fa-music text-green-500 animate-pulse text-[10px]"></i> <span class="truncate max-w-[150px]">ฟังเพลง: ${songName} - ${artist}</span>`;
                         presenceEl.classList.remove('hidden');
                     } 
+                    // 🌟 ลำดับความสำคัญที่ 2: ถ้าไม่ได้ฟัง Spotify แต่มีสถานะกิจกรรมอื่นวิ่งอยู่ (เช่น เล่นเกม)
                     else if (lanyardData.activities && lanyardData.activities.length > 0) {
-                        const gameActivity = lanyardData.activities.find(act => act.type === 0);
+                        // คัดเลือกกิจกรรมที่เป็นการเล่นเกม (type: 0) หรือกิจกรรมแบบกำหนดเองที่ส่งค่าเข้ามา
+                        const gameActivity = lanyardData.activities.find(act => act.type === 0 || act.name === "Spotify");
+                        
                         if (gameActivity) {
-                            presenceEl.innerHTML = `<i class="fa-solid fa-gamepad text-pink-500 text-[10px]"></i> <span class="truncate max-w-[150px]">เล่นเกม: ${gameActivity.name}</span>`;
+                            if (gameActivity.name === "Spotify") {
+                                // ดักไว้เผื่อกรณีข้อมูล Spotify ไปหลุดอยู่ในอาร์เรย์กิจกรรมปกติ
+                                const details = gameActivity.details || "กำลังฟังเพลง";
+                                const state = gameActivity.state || "";
+                                presenceEl.innerHTML = `<i class="fa-solid fa-music text-green-500 animate-pulse text-[10px]"></i> <span class="truncate max-w-[150px]">ฟังเพลง: ${details} ${state ? '- ' + state : ''}</span>`;
+                            } else {
+                                presenceEl.innerHTML = `<i class="fa-solid fa-gamepad text-pink-500 text-[10px]"></i> <span class="truncate max-w-[150px]">เล่นเกม: ${gameActivity.name}</span>`;
+                            }
                             presenceEl.classList.remove('hidden');
                         }
                     }
@@ -471,12 +463,11 @@
                     try {
                         const backupRes = await fetch(`https://discordlookup.mesalytic.moe/v1/user/${discordId}`);
                         const backupJson = await backupRes.json();
-                        
                         if (backupJson && backupJson.avatar) {
                             applyDiscordStatusAndPresence(card, 'offline', backupJson.avatar.id, discordId, null);
                         }
                     } catch (backupErr) {
-                        console.error("ไม่สามารถดึงข้อมูลโปรไฟล์ของไอดีนี้ได้จากทุกระบบ: " + discordId);
+                        console.error("ไม่สามารถดึงข้อมูลโปรไฟล์ได้: " + discordId);
                     }
                 }
             }
